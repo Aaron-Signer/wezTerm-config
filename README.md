@@ -1,0 +1,1 @@
+# wezTerm-config
