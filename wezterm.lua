@@ -1,3 +1,19 @@
+function getOS()
+
+	-- ask LuaJIT first
+	if jit then
+		return jit.os
+	end
+
+	-- Unix, Linux variants
+	local fh,err = assert(io.popen("uname -o 2>/dev/null","r"))
+	if fh then
+		osname = fh:read()
+	end
+
+	return osname or "Windows"
+end
+
 -- Pull in the wezterm API
 local wezterm = require 'wezterm'
 
@@ -10,19 +26,15 @@ local config = wezterm.config_builder()
 config.initial_cols = 120
 config.initial_rows = 28
 
--- or, changing the font size and color scheme.
---config.font_size = 10
---config.color_scheme = 'AdventureTime'
+local os = getOS()
 
---config.background = {
---    {
---        source = {
---            File = "/home/sigz/.config/wezterm/wp6819512-cool-4k-wallpapers.jpg",
---        },
---    },
---}
+if os == "Darwin" then
+	config.font_size = 20
+	config.window_background_image = "/Users/aaronsigner/.config/wezterm/wp6819512-cool-4k-wallpapers.jpg"
+else
+	config.font_size = 100
+end
 
-config.window_background_image = "/home/sigz/.config/wezterm/wp6819512-cool-4k-wallpapers.jpg"
 config.window_background_image_hsb = {
   -- Darken the background image by reducing it to 1/3rd
   brightness = 0.15,
